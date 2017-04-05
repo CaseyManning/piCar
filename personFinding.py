@@ -22,11 +22,20 @@ def set(resolution=False, exposure=False, gain=False, contrast=False):
 
 
 def findXValue():
-	image = getImage()
-	height, width, depth = image.shape
-	diffs = range(10)
-	for i in range(height):
-		for j in range(width):
+	cam_image = getImage()
+	image = rotateArray(cam_image)
+	height, width, depth = cam_image.shape
+	maxDiff = 0
+	maxDiffIndex = -1
+	for i in range(width):
+		for j in range(height):
 			diff = 0
 			for i in range(0, 3)
 				diff += abs(image[i, j][i] - prevImage[i, j][i])
+				if diff > maxDiff:
+					maxDiff = diff
+					maxDiffIndex = i
+	return maxDiffIndex
+
+def rotateArray(cam_image):
+	return np.swapaxes(cam_image, 0, 1)
